@@ -7,28 +7,22 @@ makeコマンドで実行可能です。
 
 - Dockerイメージのビルド
 make build
-
 - コンテナの起動
 make run
-
 - コンテナの停止
 make stop
-
 - Topicの作成
 make topicc
   - 注意事項
+
     すでにtopicが存在する場合は、エラーメッセージが表示される場合があります。
-    make producer, make consumerはそれぞれ実行可能です。
-    
+    make producer, make consumerはそれぞれ実行可能です。    
 - メッセージのプロデュース（メッセージの送信）プロンプトからメッセージを送信可能
 make producer
-
 - メッセージのコンシューム（メッセージの受信）Topicからメッセージをメッセージを読み取ります。
 make consumer
-
 - コンテナの削除
 make destroy
-
 - コンテナの初期化
 make init
 
