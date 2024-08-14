@@ -1,0 +1,48 @@
+# Dockerイメージのビルド
+build:
+	docker build -t my-kafka-image .
+# Dockerコンテナの起動
+run:
+	-docker rm -f my-kafka-container 
+	docker run -d --name my-kafka-container -p 2181:2181 -p 2888:2888 -p 3888:3888 -p 9092:9092 -p 9093:9093 my-kafka-image
+# Kafkaのトピックの作成
+topic:
+	-docker start my-kafka-container  
+	@if ! docker exec -it my-kafka-container kafka-topics --list --bootstrap-server localhost:9092 | grep -q "^my-topic$$"; then \
+		docker exec -it my-kafka-container kafka-topics --create --topic my-topic --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1; \
+	else \
+		echo "Topic 'my-topic' already exists."; \
+	fi
+# producerの起動
+producer:
+	docker exec -it my-kafka-container kafka-console-producer --topic my-topic --bootstrap-server localhost:9092
+# consumerの起動
+consumer:
+	docker exec -it my-kafka-container kafka-console-consumer --topic my-topic --bootstrap-server localhost:9092 --from-beginning
+# 停止
+stop:
+	docker my-kafka-container
+down:
+	docker 
+# # コンテナの停止
+# stop:
+# 	docker compose stop
+# 
+down:
+	docker compose down --remove-orphans
+destroy:
+	docker compose down --rmi all --volumes --remove-orphans
+destroy-volumes:
+	docker compose down --volumes --remove-orphans
+rebuild:
+	@make build
+	@make run
+	@make topic
+
+# コンテナの初期化
+init:
+	@make stop
+	@make destroy
+	@make build
+	@make run
+	@make topic
